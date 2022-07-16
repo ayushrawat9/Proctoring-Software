@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>SignIn</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">-->
+<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<!--        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
+<!--        -->
+<!--        <link rel="stylesheet" href="">-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+
+        <!-- <link rel="stylesheet"  href="{%  static  'css/style1.css'  %}"> -->
+    </head>
+    <style>
+          video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+    </style>
+    <body>
+
+<div class="navbar navbar-expand-md navbar-dark bg-dark mb-4" role="navigation">
+    <a class="navbar-brand" href="#">Proctoring Software</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/Lakshyagour/Proctoring-Software" target="_blank">Github</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" >{{ user.username }}</a>
+                {% if user.role == "student" %}
+                <li class="nav-item">
+                    <a class="nav-link" href = "/students">Dashboard</a>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href = "/teachers">Dashboard</a>
+                {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="/signout" >Sign Out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="/signin" >SignIn</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/signup" >SignUp</a>
+            </li>
+            {% endif %}
+
+        </ul>
+        <form class="form-inline mt-2 mt-md-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+<style>
+.navbar .dropdown-toggle, .navbar .dropdown-menu a {
+    cursor: pointer;
+}
+
+.navbar .dropdown-item.active, .navbar .dropdown-item:active {
+    color: inherit;
+    text-decoration: none;
+    background-color: inherit;
+}
+
+.navbar .dropdown-item:focus, .navbar .dropdown-item:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}
+
+@media (min-width: 767px) {
+    .navbar .dropdown-toggle:not(.nav-link)::after {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: .5em;
+        vertical-align: 0;
+        border-bottom: .3em solid transparent;
+        border-top: .3em solid transparent;
+        border-left: .3em solid;
+    }
+}
+
+</style>
+
+    {% if messages %}
+        {% for message in messages %}            
+      <div class="alert alert-danger alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Info!</strong> {{message}}.
+      </div>
+       {% endfor %}
+    {% endif %}
+
+      
+    </body>
+    
+</html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <title>Sign in</title>
+</head>
+
+<body>
+  <div class="main">
+    <p class="sign" align="center">Sign in</p>
+    <form class ="form" action="" method ='post'>
+      {% csrf_token %}
+      <input class="un " type="text" id='username' name='username' align="center" placeholder="Username">
+      <input class="pass" type="password" id='pass1' name='pass1' align="center" placeholder="Password">
+
+
+      <div class="form-group">
+        <video id="stream" width="370" height="320">
+            <canvas id="capture" width="370" height="320">
+            </canvas>
+          </video>
+          <br>
+            <button id="btn-capture" type="button" >Capture Image</button>
+        <br><br>
+            <div id="snapshot"></div>
+        <input type="hidden" id="image_hidden" name="image_hidden" Required>
+        </div>
+      <input type="submit" class="submit" value = "Submit"/>
+        <p class="forgot" align="center"><a href="#">Forgot Password?</a></p>
+      <br>
+    </form>
+    </div>
+</body>
+
+</html>
+<script>
+    var btnCapture = document.getElementById( "btn-capture" );
+
+    var stream = document.getElementById( "stream" );
+    var capture = document.getElementById( "capture" );
+    var snapshot = document.getElementById( "snapshot" );
+    
+    var cameraStream = null;
+    
+    btnCapture.addEventListener( "click", captureSnapshot );
+
+    function startStreaming() {
+    
+      var mediaSupport = 'mediaDevices' in navigator;
+
+      if( mediaSupport && null == cameraStream ) {
+    
+        navigator.mediaDevices.getUserMedia( { video: true } )
+        .then( function( mediaStream ) {
+    
+          cameraStream = mediaStream;
+    
+          stream.srcObject = mediaStream;
+    
+          stream.play();
+        })
+        .catch( function( err ) {
+          console.log( "Unable to access camera: " + err );
+
+        });
+      }
+      else {
+        alert( 'Your browser does not support media devices.' );
+        return;
+      }
+    }
+
+    function stopStreaming() {
+    
+      if( null != cameraStream ) {
+    
+        var track = cameraStream.getTracks()[ 0 ];
+    
+        track.stop();
+        stream.load();
+    
+        cameraStream = null;
+      }
+    }
+    
+    function captureSnapshot() {
+      if( null != cameraStream ) {
+    
+        var ctx = capture.getContext( '2d' );
+        var img = new Image();
+    
+        ctx.drawImage( stream, 0, 0, capture.width, capture.height );
+      
+        img.src		= capture.toDataURL( "image/png" );
+        img.width	= 370;
+        img.height	= 320;
+        //console.log(capture.toDataURL( "image/png" ));
+        snapshot.innerHTML = '';
+    
+        snapshot.appendChild( img );
+        var d1 = capture.toDataURL("image/png");
+        var res = d1.replace("data:image/png;base64,", "");
+        console.log(res);
+        snapshot.innerHTML = '';
+        snapshot.appendChild( img );
+        $("#image_hidden").val(res)    
+
+      }
+    }
+    window.onload = function() {
+       startStreaming();
+       captureSnapshot();
+    }
+    
+</script>

@@ -1,0 +1,129 @@
+{% extends 'students/base.html' %}
+{% block test_login %}
+{% if messages %}
+
+<ul class="messages">
+    {% for message in messages %}
+    <li style="color : red" >{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<h3>Test Login</h3>
+{% if messages %}
+        {% for message in messages %}
+      <div class="alert alert-danger alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Info!</strong> {{message}}.
+      </div>
+       {% endfor %}
+    {% endif %}
+
+        <form action="test-login" method ='POST'>
+        {% csrf_token %}
+            <label for="test_id">Test Id</label>
+            <input type="text" id='test_id' name='test_id' placeholder="Enter test id" Required>
+            <br>
+            <label for="pass">Password</label>
+            <input type="password" id='pass' name='pass' placeholder="Enter Your Password" Required>
+            <br>
+            <div class="form-group">
+                <video id="stream" width="370" height="320">
+                    <canvas id="capture" width="370" height="320">
+                    </canvas>
+                  </video>
+                  <br>
+                    <button id="btn-capture" type="button" >Capture Image</button>
+                <br><br>
+                    <div id="snapshot"></div>
+                <input type="hidden" id="image_hidden" name="image_hidden" Required>
+                </div>
+            <button type="submit" class="btn btn-primary justify-content-center">Sign In</button>
+        </form>
+        <script src="" async defer></script>
+
+<script>
+    //var btnStart = document.getElementById( "btn-start" );
+    //var btnStop = document.getElementById( "btn-stop" );
+    var btnCapture = document.getElementById( "btn-capture" );
+
+    // The stream & capture
+    var stream = document.getElementById( "stream" );
+    var capture = document.getElementById( "capture" );
+    var snapshot = document.getElementById( "snapshot" );
+
+    // The video stream
+    var cameraStream = null;
+
+    btnCapture.addEventListener( "click", captureSnapshot );
+
+
+    function startStreaming() {
+
+      var mediaSupport = 'mediaDevices' in navigator;
+
+      if( mediaSupport && null == cameraStream ) {
+
+        navigator.mediaDevices.getUserMedia( { video: true } )
+        .then( function( mediaStream ) {
+
+          cameraStream = mediaStream;
+
+          stream.srcObject = mediaStream;
+
+          stream.play();
+        })
+        .catch( function( err ) {
+          console.log( "Unable to access camera: " + err );
+
+        });
+      }
+      else {
+        alert( 'Your browser does not support media devices.' );
+        return;
+      }
+    }
+
+    // Stop Streaming
+    function stopStreaming() {
+
+      if( null != cameraStream ) {
+
+        var track = cameraStream.getTracks()[ 0 ];
+
+        track.stop();
+        stream.load();
+
+        cameraStream = null;
+      }
+    }
+    function captureSnapshot() {
+
+      if( null != cameraStream ) {
+
+        var ctx = capture.getContext( '2d' );
+        var img = new Image();
+
+        ctx.drawImage( stream, 0, 0, capture.width, capture.height );
+
+        img.src		= capture.toDataURL( "image/png" );
+        img.width	= 370;
+        img.height	= 320;
+        //console.log(capture.toDataURL( "image/png" ));
+        snapshot.innerHTML = '';
+
+        snapshot.appendChild( img );
+        var d1 = capture.toDataURL("image/png");
+        var res = d1.replace("data:image/png;base64,", "");
+        console.log(res);
+        snapshot.innerHTML = '';
+        snapshot.appendChild( img );
+        $("#image_hidden").val(res)
+
+      }
+    }
+    window.onload = function() {
+       startStreaming();
+       captureSnapshot();
+    }
+</script>
+{% endblock %}

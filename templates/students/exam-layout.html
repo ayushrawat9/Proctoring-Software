@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>MyProctor.ai</title>
+  </head>
+
+  <body>
+
+      <div id="snackbar">Don't try to open new window or any other applications. We are Monitoring you!</div>
+
+      {% block body %}
+      {% endblock %}
+
+
+</body>
+<script>
+    window.addEventListener('selectstart', function(e){ e.preventDefault(); });
+        $(document).ready(function () {
+            //Disable cut copy paste
+            $('body').bind('select cut copy paste', function (e) {
+                e.preventDefault();
+            });
+
+            //Disable mouse right click
+            $("body").on("contextmenu",function(e){
+                return false;
+            });
+        });
+        /** TO DISABLE SCREEN CAPTURE **/
+document.addEventListener('keyup', (e) => {
+    if (e.key == 'PrintScreen') {
+        navigator.clipboard.writeText('');
+        alert('Screenshots disabled!');
+    }
+});
+
+/** TO DISABLE PRINTS WHIT CTRL+P **/
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key == 'p') {
+        alert('This section is not allowed to print or export to PDF');
+        e.cancelBubble = true;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    }
+});
+
+</script>
+</html>

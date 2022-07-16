@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    html,
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: "Roboto", sans-serif;
+    }
+
+    .w3-sidebar {
+      z-index: 3;
+      width: 250px;
+      top: 43px;
+      bottom: 0;
+      height: inherit;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="w3-top bg-dark">
+    <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+      <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1"
+        href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>
+      <!-- <a href="#" class="w3-bar-item w3-button w3-theme-l1">Logo</a> -->
+      <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">{{ request.user.username }}</a>
+      <a href="/" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Home</a>
+      <a href="#" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Contact</a>
+      <a href="/signout" class="w3-bar-item w3-button w3-hide-small w3-hide-medium w3-hover-white">Sign Out</a>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+    <a href="javascript:void(0)" onclick="w3_close()"
+      class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+      <i class="fa fa-remove"></i>
+    </a>
+    <h4 class="w3-bar-item"><b>Menu</b></h4>
+
+    <ul class="nav flex-column pt-3 pt-md-0">
+        <li class="nav-item">
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+              data-bs-target="#submenu-components">
+          <span>
+          </span>
+          <span class="sidebar-text">Create Exam</span>
+        </span>
+            </span>
+            </span>
+            <div class="multi-level collapse " role="list" id="submenu-components" aria-expanded="false">
+                <ul class="flex-column nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="create-test-obj">
+                            <span class="sidebar-text">Objective</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="create-test-subj">
+                            <span class="sidebar-text">Subjective</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <a class="w3-bar-item w3-button w3-hover-black" href="view-questions" class="nav-link">
+            View Questions
+        </a>
+        <!--      <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">-->
+        <!--        Update Questions-->
+        <!--      </a>-->
+        <!--      <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">-->
+        <!--        Delete Questions</a>-->
+        <!--      <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">-->
+        <!--        Exam History-->
+        <!--      </a>-->
+        <a class="w3-bar-item w3-button w3-hover-black" href="view-tests-logs" class="nav-link">
+            View Saved Test Logs
+        </a>
+        <a class="w3-bar-item w3-button w3-hover-black" href="view-live-tests-logs" class="nav-link">
+            Live Monitoring
+        </a>
+        <!--      <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">-->
+        <!--        Insert Marks-->
+        <!--      </a>-->
+        <!--      <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">-->
+        <!--        Publish Results-->
+        <!--      </a>-->
+        <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">
+            Report Problems
+        </a>
+        <a class="w3-bar-item w3-button w3-hover-black" href="#" class="nav-link">
+            Change Password
+        </a>
+        <a href="#" onclick="return funLogout()"
+           class="btn btn-secondary d-flex align-items-center justify-content-center">
+            <span class="sidebar-icon"><span class="fas fa-sign-out-alt"></span></span> <span>Logout</span>
+        </a>
+    </ul>
+  </nav>
+
+  <!-- Overlay effect when opening sidebar on small screens -->
+  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu"
+    id="myOverlay"></div>
+
+  <!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+  
+  <div class="w3-main" style="margin-left:250px">
+      
+    <div class="w3-row w3-padding-64">
+
+      {% block home %}
+      {% endblock %}
+      
+      {% block obj %}
+      {% endblock %}
+
+      {% block subj %}
+      {% endblock %}
+  
+      {% block view_questions %}
+      {% endblock %}
+
+      {% block view_logs %}
+      {% endblock %}
+
+      {% block live_logs %}
+      {% endblock %}
+      
+    </div>
+
+  </div>
+    <script>
+      function funLogout() {
+
+        swal.fire({
+          title: 'Are you sure?',
+          text: "Do you really want to logout?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Logout me!',
+          cancelButtonText: 'No!',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#202124',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              type: "POST",
+              url: "/logout",
+              success: function (response) {
+                if (response == "success") {
+                  console.log(response);
+                  window.location.href = "/";
+                }
+              }
+            });
+            swal.fire(
+              'Success!',
+              'You are successfully has been sign out from the system.',
+              'success'
+            )
+          } else if (
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swal.fire(
+              'Cancelled',
+              'Logout cancelled.',
+              'error'
+            )
+          }
+        })
+      }
+
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    <script>
+      // Get the Sidebar
+      var mySidebar = document.getElementById("mySidebar");
+
+      // Get the DIV with overlay effect
+      var overlayBg = document.getElementById("myOverlay");
+
+      // Toggle between showing and hiding the sidebar, and add overlay effect
+      function w3_open() {
+        if (mySidebar.style.display === 'block') {
+          mySidebar.style.display = 'none';
+          overlayBg.style.display = "none";
+        } else {
+          mySidebar.style.display = 'block';
+          overlayBg.style.display = "block";
+        }
+      }
+
+      // Close the sidebar with the close button
+      function w3_close() {
+        mySidebar.style.display = "none";
+        overlayBg.style.display = "none";
+      }
+    </script>
+
+  </body>
+
+</html>

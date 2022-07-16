@@ -1,0 +1,230 @@
+{% extends 'students/exam-layout.html' %}
+{% block body %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js" crossorigin="anonymous"></script>
+{{ test_id|json_script:"test_id" }}
+{{ username|json_script:"username" }}
+
+<video class="input_video" style="width:200px; height:200px"></video>
+
+<video id="stream" width="370" height="320" style="display:none">
+    <canvas id="capture" width="370" height="320">
+    </canvas>
+</video>
+
+<input type="hidden" id="image_hidden" name="image_hidden" Required>
+
+
+<form action="give-test-objective" method="POST">
+    {% csrf_token %}
+    {% for question in objective_questions %}
+    <div>
+        <p>{{ question.question_id }} {{ question.question }} Marks : {{ question.marks}}</p>
+        <fieldset name="{{ question.question_id }}">
+            <input type="radio" name="{{ question.question_id }}" value="a">{{ question.option_a }}<br>
+            <input type="radio" name="{{ question.question_id }}" value="b">{{ question.option_b }}<br>
+            <input type="radio" name="{{ question.question_id }}" value="c">{{ question.option_c }}<br>
+            <input type="radio" name="{{ question.question_id }}" value="d">{{ question.option_d }}<br>
+        </fieldset>
+    </div>
+    {% endfor %}
+    <input type="submit">
+</form>
+<script>
+
+
+const test_id = JSON.parse(document.getElementById('test_id').textContent);
+const username = JSON.parse(document.getElementById('username').textContent);
+var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+
+const chatSocket = new WebSocket(
+    ws_scheme
+    +'://'
+    + window.location.host
+    + '/ws/chat/'
+    + test_id
+    + '/'
+);
+
+const videoElement = document.getElementsByClassName('input_video')[0];
+window.CSRF_TOKEN = "{{ csrf_token }}";
+console.log(window.CSRF_TOKEN)
+
+var count=0
+function onResults(results) {
+for (let i = 0; i < results.detections.length; i++) {
+get_face_motion_flag(results,results.detections[i].landmarks);
+}
+
+  get_person_detection_flag(results,results.detections.length);
+}
+
+function send_logs(results, violation_message ){
+
+var imgData = results.image.toDataURL();
+      flag = true
+      count=0
+
+       chatSocket.send(JSON.stringify({
+                'message': username+ ' '+ violation_message,
+                'image':imgData,
+                'id':username
+       }));
+
+       captureSnapshot()
+
+       $.ajax({
+         url: '/students/save-proctor-log-to-media',
+         type: 'POST',
+         ContentType : 'application/json',
+         data: {'username': username,'test_id':test_id,csrfmiddlewaretoken: '{{ csrf_token }}','image': $('#image_hidden').val(),'flag': violation_message}
+       }).done(function(response){
+         console.log(response);
+       });
+ }
+
+function get_face_motion_flag(results,landmarks)
+{ let head_flag=false
+
+  //for right side
+  if (landmarks[0]["x"] <= landmarks[4]["x"])
+  {
+    count+=1
+    if (count == 20)
+    { head_flag = true
+      count=0
+      console.log("looking right side of window")
+      send_logs(results,"looking right side of window");
+    }
+  }
+  //for left side
+  if (landmarks[1]["x"] >= landmarks[5]["x"])
+  {
+    count+=1
+    if (count == 20)
+    { head_flag = true
+      count=0
+      console.log("looking left side of window")
+      send_logs(results,"looking left side of window");
+     }
+  }
+}
+
+function get_person_detection_flag(results,detection_length)
+{
+  if (detection_length == 0)
+  {
+    count+=1
+    if (count == 20)
+    {
+      flag = true
+      count=0
+      console.log("no person detected");
+      send_logs(results,"no person detected");
+    }
+  }
+
+  if (detection_length > 1)
+  {
+    count+=1
+    if (count == 20)
+    {
+      flag = true
+      count=0
+      console.log("more than 1 person detected");
+      send_logs(results,"more than 1 person detected");
+    }
+  }
+}
+
+
+const faceDetection = new FaceDetection({locateFile: (file) => {
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`;
+}});
+
+faceDetection.setOptions({
+  model: 'short',
+  minDetectionConfidence: 0.5,
+});
+
+faceDetection.onResults(onResults);
+
+const camera = new Camera(videoElement, {
+  onFrame: async () => {
+    await faceDetection.send({image: videoElement});
+  },
+  width: 1280,
+  height: 720
+});
+camera.start();
+
+
+
+
+var stream = document.getElementById( "stream" );
+var capture = document.getElementById( "capture" );
+
+var cameraStream = null;
+
+
+function captureSnapshot() {
+      if( null != cameraStream ) {
+
+        var ctx = capture.getContext( '2d' );
+        var img = new Image();
+        ctx.drawImage( stream, 0, 0, capture.width, capture.height );
+        img.src		= capture.toDataURL( "image/png" );
+        img.width	= 370;
+        img.height	= 320;
+        var d1 = capture.toDataURL("image/png");
+        var res = d1.replace("data:image/png;base64,", "");
+        $("#image_hidden").val(res)
+      }
+    }
+
+function startStreaming() {
+
+      var mediaSupport = 'mediaDevices' in navigator;
+
+      if( mediaSupport && null == cameraStream ) {
+
+        navigator.mediaDevices.getUserMedia( { video: true } )
+        .then( function( mediaStream ) {
+
+          cameraStream = mediaStream;
+
+          stream.srcObject = mediaStream;
+
+          stream.play();
+        })
+        .catch( function( err ) {
+          console.log( "Unable to access camera: " + err );
+
+        });
+      }
+      else {
+        alert( 'Your browser does not support media devices.' );
+        return;
+      }
+    }
+  window.onload = function() {
+       startStreaming();
+  }
+
+document.addEventListener("visibilitychange", (event) => {
+  if (document.visibilityState == "visible") {
+    console.log("tab is active")
+  } else {
+    chatSocket.send(JSON.stringify({
+                'message': username+ ' '+ "User Switching Tabs",
+                'id':username
+       }));
+  }
+});
+
+</script>
+{% endblock %}

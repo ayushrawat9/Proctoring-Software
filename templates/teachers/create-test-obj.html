@@ -1,0 +1,38 @@
+{% extends 'teachers/base.html' %}
+{% block obj %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="w3-row w3-padding-64">
+
+        <h1 class="w3-text-teal">CREATE EXAM [Objective]</h1>
+<div class="row align-items-center d-flex  justify-content-center">
+    <div class="col-12 mb-4">
+        <div class="card border-light shadow-sm components-section align-items-center d-flex  justify-content-center">
+            <div class="card-body align-items-center d-flex justify-content-center">
+                <div class="row mb-4">
+                    <div class="col-lg-12 col-sm-16">
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form }}
+                            <h3>Don't have a template download here</h3>
+                            <a href="" class="btn btn-primary"
+                                       style="margin-top: 10px;">Download Template</a>
+                            <p><input type="submit" class="btn btn-primary" value="Create Exam"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
+{% endblock %}

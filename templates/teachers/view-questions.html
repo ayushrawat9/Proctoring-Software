@@ -1,0 +1,33 @@
+{% extends 'teachers/base.html' %}
+{% block view_questions %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="view-questions" method="POST">
+{% csrf_token %}
+    <select id = "test_id" name = "test_id">
+        {% for test in tests %}
+        <option value="{{ test.test_id }}"> {{ test.test_id }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+{% for question in questions %}
+<p>{{ question.question_id }} {{ question.question }}</p><br>
+<div>
+    {% if type == "Objective" %}
+    <ul>
+    <li>{{ question.option_a }}</li>
+    <li>{{ question.option_b }}</li>
+    <li>{{ question.option_c }}</li>
+    <li>{{ question.option_d }}</li>
+    </ul>
+    {% endif %}
+</div>
+{% endfor %}
+</body>
+</html>
+{% endblock %}

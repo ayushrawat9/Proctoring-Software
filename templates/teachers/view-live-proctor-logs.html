@@ -1,0 +1,65 @@
+{% extends 'teachers/base.html' %}
+{% block live_logs %}
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+</head>
+<body>
+<form action="view-live-tests-logs" method="POST">
+{% csrf_token %}
+    <select id = "test_id" name = "test_id">
+        {% for test in tests %}
+        <option value="{{ test.test_id }}"> {{ test.test_id }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+
+    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+
+    {{ room_name|json_script:"room_name" }}
+<div id="box">
+
+</div>
+    <script>
+
+        const room_name = JSON.parse(document.getElementById('room_name').textContent);
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        console.log("Chat Socket Opened");
+        const chatSocket = new WebSocket(
+           ws_scheme
+            +'://'
+            + window.location.host
+            + '/ws/chat/'
+            + room_name
+            + '/'
+        );
+        const box = document.getElementById('box');
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').value += (data.message + '\n');
+            var myImageElement = document.getElementById(data.id);
+            if(myImageElement){
+                if(data.image){
+            myImageElement.src = data.image;}
+            }
+            else {
+            const image = document.createElement('img');
+            if(data.image){
+            image.setAttribute('src',data.image);}
+            image.setAttribute('id',data.id);
+            image.setAttribute('height', 250);
+            image.setAttribute('width', 250);
+            box.appendChild(image);
+            }
+        };
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+    </script>
+</body>
+</html>
+{% endblock %}

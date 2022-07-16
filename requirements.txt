@@ -1,0 +1,10 @@
+asgiref==3.5.2
+channels==3.0.5
+coolname==1.1.0
+deepface==0.0.75
+Django==4.0.5
+django_base64field==1.0
+mediapipe==0.8.10
+numpy==1.22.4
+opencv_python==4.6.0.66
+pandas==1.4.2

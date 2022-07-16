@@ -1,0 +1,26 @@
+{% extends 'teachers/base.html' %}
+{% block view_logs %}
+
+<form action="view-tests-logs" method="POST">
+{% csrf_token %}
+    <select id = "test_id" name = "test_id">
+        {% for test in tests %}
+        <option value="{{ test.test_id }}"> {{ test.test_id }}</option>
+        {% endfor %}
+    </select>
+    <select id = "student_id" name = "student_id">
+        {% for student in students %}   
+        <option value="{{ student.username }}"> {{ student.username }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+
+{% for log in proctoring_logs %}
+<div style="width:100%">
+    <h4 style="display:inline-block; ">{{ log.flag }}</h4>
+    <img src="{{ log.image.url }}" style = "width:150px ; height:150px">
+</div>
+{% endfor %}
+
+{% endblock %}
