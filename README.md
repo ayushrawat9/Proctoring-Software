@@ -1,6 +1,6 @@
 # Proctoring Web Application
 
-!https://github.com/ayushrawat9/Proctoring-Software/assets/75422096/22ff75b4-f667-4301-a6d4-ce78464ca07d
+https://github.com/ayushrawat9/Proctoring-Software/assets/75422096/22ff75b4-f667-4301-a6d4-ce78464ca07d
 
 ## Table of Contents
 - [Introduction](#introduction)
